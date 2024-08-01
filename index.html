@@ -4,7 +4,7 @@
     <title>Tu Cachapa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="description" content="David El de Los Loros" />
+    <meta name="description" content="Tu Cachapa | Comida Venezolana" />
     <meta property="og:image" content="logotuca.png" />
     <link rel="icon" href="logotuca.png" type="image/png/jpg">
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
@@ -183,19 +183,23 @@
 <div id="popup" class="popup">
     <div class="popup-content">
         <span class="close-button" onclick="cerrarPopup()">×</span>
-        <h1>Regístrate y participa en Nuestro Sorteo</h1>
+        <h1>Regístrate y participa en Nuestro Sorteo: Cena Para 2</h1>
         <span>Participación única</span>
         <form id="sorteoForm">
-            <input type="text" placeholder="Nombre" required><br>
-            <input type="tel" id="phone" placeholder="Teléfono" required><br>
+            <input type="text" name="name" placeholder="Nombre" required><br>
+            <input type="email" name="email" placeholder="Email Principal" required><br>
+            <input type="tel" id="phone" name="phone" placeholder="Teléfono" required><br>
             <span id="phoneError" style="display:none;color:red;">Teléfono inválido, debe tener al menos 10 dígitos.</span><br>
+            <label for="plato">Tu Plato/Bebida/Postre Preferido de Nuestro Puesto</label><br>
+            <input type="text" name="plato" id="plato"><br>
             <div>
-                <input type="checkbox" required> <span>Acepto <a href="#">Las políticas de esta empresa</a></span>
+                <input type="checkbox" id="accept" required> <span>Acepto <a href="#">Las políticas de esta empresa</a></span>
             </div>
             <button type="submit" class="popup-button">Registrarme</button>
         </form>
     </div>
 </div>
+
 
 
 
@@ -280,22 +284,25 @@ telefonoInput.addEventListener("input", function () {
     }
 });
 
-form.addEventListener('submit', function(event) {
+document.getElementById('sorteoForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    const inputName = encodeURIComponent(form.querySelector('input[type="text"]').value);
-    const inputPhone = encodeURIComponent(telefonoInput.value.replace(/\s+/g, ''));
-    const clientEmail = encodeURIComponent("seleccionjuangomez@gmail.com");
+    const form = event.target;
+    const inputName = encodeURIComponent(form.querySelector('input[name="name"]').value);
+    const inputEmailClient = encodeURIComponent(form.querySelector('input[name="email"]').value);
+    const inputPhone = encodeURIComponent(form.querySelector('input[name="phone"]').value.replace(/\s+/g, ''));
+    const inputPlato = encodeURIComponent(form.querySelector('input[name="plato"]').value);
+    const clientEmail = encodeURIComponent("");
 
     // Enviar datos solo si el teléfono tiene al menos 10 dígitos
     if (inputPhone.replace(/\D/g, '').length < 10) {
-        phoneError.style.display = 'block';
+        document.getElementById('phoneError').style.display = 'block';
         return;
     } else {
-        phoneError.style.display = 'none';
+        document.getElementById('phoneError').style.display = 'none';
     }
 
-    const url = `?clientEmail=${clientEmail}&leadName=${inputName}&leadPhone=${inputPhone}`;
+    const url = `your-server-endpoint?clientEmail=${clientEmail}&leadName=${inputName}&leadPhone=${inputPhone}&leadEmail=${inputEmailClient}&plato=${inputPlato}`;
 
     fetch(url, {
         method: 'POST',
@@ -313,11 +320,20 @@ form.addEventListener('submit', function(event) {
     .then(result => {
         console.log(result);
         // Aquí puedes añadir código para mostrar algún mensaje de confirmación al usuario
+        document.getElementById('popup').style.display = 'none';
+        alert("Registro exitoso. ¡Buena suerte en el sorteo!");
     })
     .catch(error => {
+        console.error('Error:', error);
         document.getElementById('popup').style.display = 'none';
+        alert("Hubo un error al registrar tu participación. Por favor, inténtalo nuevamente.");
     });
 });
+
+function cerrarPopup() {
+    document.getElementById('popup').style.display = 'none';
+}
+
  
 
 </script>
